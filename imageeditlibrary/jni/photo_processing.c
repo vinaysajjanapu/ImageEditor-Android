@@ -77,6 +77,7 @@ void Java_com_xinlan_imageeditlibrary_editimage_fliter_PhotoProcessing_nativeRot
 
 void Java_com_xinlan_imageeditlibrary_editimage_fliter_PhotoProcessing_nativeApplyInstafix(JNIEnv* env, jobject thiz) {
 	applyInstafix(&bitmap);
+//	setBrightness(&bitmap,2.0);
 }
 
 void Java_com_xinlan_imageeditlibrary_editimage_fliter_PhotoProcessing_nativeApplyAnsel(JNIEnv* env, jobject thiz) {
@@ -175,4 +176,49 @@ int Java_com_xinlan_imageeditlibrary_editimage_fliter_PhotoProcessing_nativeResi
 
 	bitmap.width = newWidth;
 	bitmap.height = newHeight;
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////tuning/////////////////////////////////////////////////////
+
+
+void Java_com_xinlan_imageeditlibrary_editimage_fliter_PhotoProcessing_nativeTuneContrast(JNIEnv* env, jobject thiz, jint value) {
+	tuneContrast(&bitmap, value);
+}
+
+
+void Java_com_xinlan_imageeditlibrary_editimage_fliter_PhotoProcessing_nativeTuneBrightness(JNIEnv* env, jobject thiz, jint value) {
+	tuneBrightness(&bitmap, value);
+}
+
+
+void Java_com_xinlan_imageeditlibrary_editimage_fliter_PhotoProcessing_nativeTuneTemperature(JNIEnv* env, jobject thiz, jint value) {
+	tuneTemperature(&bitmap, value);
+}
+
+
+void Java_com_xinlan_imageeditlibrary_editimage_fliter_PhotoProcessing_nativeTuneTint(JNIEnv* env, jobject thiz, jint value) {
+	tuneTint(&bitmap, value);
+}
+
+void Java_com_xinlan_imageeditlibrary_editimage_fliter_PhotoProcessing_nativeTuneHue(JNIEnv* env, jobject thiz, jint value) {
+	tuneHue(&bitmap, value);
+}
+
+void Java_com_xinlan_imageeditlibrary_editimage_fliter_PhotoProcessing_nativeTuneSaturation(JNIEnv* env, jobject thiz, jint value) {
+	tuneSaturation(&bitmap, value);
+}
+
+void Java_com_xinlan_imageeditlibrary_editimage_fliter_PhotoProcessing_nativeTuneSharpen(JNIEnv* env, jobject thiz, jint value) {
+	tuneSharpen(&bitmap, value);
+}
+
+void Java_com_xinlan_imageeditlibrary_editimage_fliter_PhotoProcessing_nativeTuneBlur(JNIEnv* env, jobject thiz, jint value) {
+	tuneBlur(&bitmap, value);
+}
+
+void Java_com_xinlan_imageeditlibrary_editimage_fliter_PhotoProcessing_nativeTuneVignette(JNIEnv* env, jobject thiz, jint value) {
+	tuneVignette(&bitmap, value);
 }

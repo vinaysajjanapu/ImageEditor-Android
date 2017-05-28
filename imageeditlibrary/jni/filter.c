@@ -885,3 +885,131 @@ void applyRetro(Bitmap* bitmap) {
 	}
 }
 
+unsigned char truncate(int val){
+    if (val > 255) return 255;
+    if (val < 0) return 0;
+    return (unsigned char)val;
+}
+
+void tuneBrightness(Bitmap* bitmap, int val) {
+	register unsigned int i;
+	unsigned int length = (*bitmap).width * (*bitmap).height;
+	unsigned char* red = (*bitmap).red;
+	unsigned char* green = (*bitmap).green;
+	unsigned char* blue = (*bitmap).blue;
+	signed char bright = (signed char)(((float)(val-50)/100)*127);
+	for (i = length; i--; ) {
+        red[i] =  truncate(red[i]+bright);
+        green[i] = truncate(green[i]+bright);
+        blue[i] = truncate(blue[i]+bright);
+	}
+}
+
+
+void tuneContrast(Bitmap* bitmap, int val) {
+	register unsigned int i;
+	unsigned int length = (*bitmap).width * (*bitmap).height;
+	unsigned char* red = (*bitmap).red;
+	unsigned char* green = (*bitmap).green;
+	unsigned char* blue = (*bitmap).blue;
+	int contrast = (int)(((float)(val-50)/100)*255);
+
+	float factor = (float)(259*(contrast + 255))/(255*(259-contrast));
+
+	for (i = length; i--; ) {
+        red[i] = truncate((int)(factor*(red[i]-128))+128);
+        green[i] = truncate((int)(factor*(green[i]-128))+128);
+        blue[i] = truncate((int)(factor*(blue[i]-128))+128);
+	}
+}
+
+void tuneHue(Bitmap* bitmap, int val) {
+	register unsigned int i;
+	unsigned int length = (*bitmap).width * (*bitmap).height;
+	unsigned char* red = (*bitmap).red;
+	unsigned char* green = (*bitmap).green;
+	unsigned char* blue = (*bitmap).blue;
+
+	for (i = length; i--; ) {
+
+	}
+}
+
+
+void tuneSaturation(Bitmap* bitmap, int val) {
+	register unsigned int i;
+	unsigned int length = (*bitmap).width * (*bitmap).height;
+	unsigned char* red = (*bitmap).red;
+	unsigned char* green = (*bitmap).green;
+	unsigned char* blue = (*bitmap).blue;
+
+	for (i = length; i--; ) {
+
+	}
+}
+
+void tuneTemperature(Bitmap* bitmap, int val) {
+	register unsigned int i;
+	unsigned int length = (*bitmap).width * (*bitmap).height;
+	unsigned char* red = (*bitmap).red;
+	unsigned char* green = (*bitmap).green;
+	unsigned char* blue = (*bitmap).blue;
+	int temperature = (int)1.5*(val-50);
+
+	for (i = length; i--; ) {
+        red[i] = truncate(red[i] + temperature);
+        blue[i] = truncate(blue[i] - temperature);
+	}
+}
+
+void tuneTint(Bitmap* bitmap, int val) {
+	register unsigned int i;
+	unsigned int length = (*bitmap).width * (*bitmap).height;
+	unsigned char* red = (*bitmap).red;
+	unsigned char* green = (*bitmap).green;
+	unsigned char* blue = (*bitmap).blue;
+	int tint = (int)1.5*(val-50);
+
+	for (i = length; i--; ) {
+        green[i] = truncate(green[i] + tint);
+	}
+}
+
+
+void tuneVignette(Bitmap* bitmap, int val) {
+	register unsigned int i;
+	unsigned int length = (*bitmap).width * (*bitmap).height;
+	unsigned char* red = (*bitmap).red;
+	unsigned char* green = (*bitmap).green;
+	unsigned char* blue = (*bitmap).blue;
+
+	for (i = length; i--; ) {
+
+	}
+}
+
+
+void tuneBlur(Bitmap* bitmap, int val) {
+	register unsigned int i;
+	unsigned int length = (*bitmap).width * (*bitmap).height;
+	unsigned char* red = (*bitmap).red;
+	unsigned char* green = (*bitmap).green;
+	unsigned char* blue = (*bitmap).blue;
+
+	for (i = length; i--; ) {
+
+	}
+}
+
+
+void tuneSharpen(Bitmap* bitmap, int val) {
+	register unsigned int i;
+	unsigned int length = (*bitmap).width * (*bitmap).height;
+	unsigned char* red = (*bitmap).red;
+	unsigned char* green = (*bitmap).green;
+	unsigned char* blue = (*bitmap).blue;
+
+	for (i = length; i--; ) {
+
+	}
+}

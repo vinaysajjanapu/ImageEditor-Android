@@ -28,6 +28,8 @@ import com.xinlan.imageeditlibrary.editimage.fragment.MainMenuFragment;
 import com.xinlan.imageeditlibrary.editimage.fragment.PaintFragment;
 import com.xinlan.imageeditlibrary.editimage.fragment.RotateFragment;
 import com.xinlan.imageeditlibrary.editimage.fragment.StirckerFragment;
+import com.xinlan.imageeditlibrary.editimage.fragment.TuneListFragment;
+import com.xinlan.imageeditlibrary.editimage.fragment.TuningFragment;
 import com.xinlan.imageeditlibrary.editimage.utils.FileUtil;
 import com.xinlan.imageeditlibrary.editimage.view.CropImageView;
 import com.xinlan.imageeditlibrary.editimage.view.CustomPaintView;
@@ -71,6 +73,7 @@ public class EditImageActivity extends BaseActivity {
     public static final int MODE_ROTATE = 4;// 旋转模式
     public static final int MODE_TEXT = 5;// 文字模式
     public static final int MODE_PAINT = 6;//绘制模式
+    public static final int MODE_TUNE = 7;
 
     public String filePath;// 需要编辑图片路径
     public String saveFilePath;// 生成的新图片路径
@@ -106,6 +109,8 @@ public class EditImageActivity extends BaseActivity {
     public RotateFragment mRotateFragment;// 图片旋转Fragment
     public AddTextFragment mAddTextFragment;//图片添加文字
     public PaintFragment mPaintFragment;//绘制模式Fragment
+    public TuneListFragment mTuneListFragment;
+    public TuningFragment mTuningFragment;
 
     private SaveImageTask mSaveImageTask;
 
@@ -183,6 +188,8 @@ public class EditImageActivity extends BaseActivity {
         mRotateFragment = RotateFragment.newInstance();
         mAddTextFragment = AddTextFragment.newInstance();
         mPaintFragment = PaintFragment.newInstance();
+        mTuneListFragment = TuneListFragment.newInstance();
+        mTuningFragment = TuningFragment.newInstance();
 
         bottomGallery.setAdapter(mBottomGalleryAdapter);
 
@@ -233,13 +240,17 @@ public class EditImageActivity extends BaseActivity {
                     return mAddTextFragment;
                 case PaintFragment.INDEX:
                     return mPaintFragment;//绘制
+                case TuneListFragment.INDEX:
+                    return mTuneListFragment;
+                case TuningFragment.INDEX:
+                    return mTuningFragment;
             }//end switch
             return MainMenuFragment.newInstance();
         }
 
         @Override
         public int getCount() {
-            return 7;
+            return 9;
         }
     }// end inner class
 
@@ -300,6 +311,8 @@ public class EditImageActivity extends BaseActivity {
             case MODE_PAINT:
                 mPaintFragment.backToMain();
                 return;
+            case MODE_TUNE:
+                mTuningFragment.backToMain();
         }// end switch
 
         if (canAutoExit()) {
@@ -349,6 +362,8 @@ public class EditImageActivity extends BaseActivity {
                 case MODE_PAINT://保存涂鸦
                     mPaintFragment.savePaintImage();
                     break;
+                case MODE_TUNE:
+                    mTuningFragment.applyFilterImage();
                 default:
                     break;
             }// end switch
