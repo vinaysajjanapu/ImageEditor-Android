@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,21 +13,19 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
-import com.xinlan.imageeditlibrary.BaseActivity;
 import com.xinlan.imageeditlibrary.R;
 import com.xinlan.imageeditlibrary.editimage.EditImageActivity;
 import com.xinlan.imageeditlibrary.editimage.fliter.PhotoProcessing;
 import com.xinlan.imageeditlibrary.editimage.view.imagezoom.ImageViewTouchBase;
 
 
-public class TuningFragment extends BaseEditFragment implements OnClickListener {
+public class TuningFragment extends BaseEditFragment {
     public static final int INDEX = 8;
     public static final String TAG = TuningFragment.class.getName();
     private View mainView;
     private View backToMenu;
     public SeekBar mSeekBar;
-    private Bitmap currentBitmap;
-    private Bitmap fliterBit;
+    private Bitmap fliterBit,currentSource;
 
 
     public static TuningFragment newInstance() {
@@ -57,38 +54,30 @@ public class TuningFragment extends BaseEditFragment implements OnClickListener 
 
         backToMenu.setOnClickListener(new BackToMenuClick());
         mSeekBar.setOnSeekBarChangeListener(new SeekValueChange());
-        mSeekBar.setProgress(50);
+        mSeekBar.setProgress(0);
         mSeekBar.setMax(100);
-        switch (TuneListFragment.MODE){
-            case TuneListFragment.BRIGHTNESS:
-                mSeekBar.setProgress(50);
-                break;
-        }
-
     }
 
     @Override
     public void onShow() {
-        activity.mode = EditImageActivity.MODE_TUNE;
-        activity.mTuningFragment.setCurrentBitmap(activity.mainBitmap);
-        activity.mainImage.setImageBitmap(activity.mainBitmap);
+        activity.mode = EditImageActivity.MODE_TUNE;/*
+        if (currentSource!=null && !currentSource.isRecycled())
+            currentSource.recycle();*/
+        currentSource = activity.mTuneListFragment.getCurrentBitmap();
+        activity.mainImage.setImageBitmap(activity.mTuneListFragment.getCurrentBitmap());
         activity.mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
         activity.mainImage.setScaleEnabled(false);
+        activity.bannerFlipper.setVisibility(View.VISIBLE);
         activity.bannerFlipper.showNext();
-
-    }
-
-    @Override
-    public void onClick(View v) {
-        int position = (Integer) v.getTag();
-        if (position == 0) {
-            activity.mainImage.setImageBitmap(activity.mainBitmap);
-            currentBitmap = activity.mainBitmap;
-            return;
+        mSeekBar.setProgress(50);
+        switch (TuneListFragment.MODE){
+            case TuneListFragment.HUE:
+            case TuneListFragment.BLUR:
+            case TuneListFragment.SHARPNESS:
+                mSeekBar.setProgress(0);
+                break;
         }
 
-        TuneImage task = new TuneImage();
-        task.execute(position);
     }
 
     private final class SeekValueChange implements OnSeekBarChangeListener {
@@ -96,7 +85,7 @@ public class TuningFragment extends BaseEditFragment implements OnClickListener 
         @Override
         public void onProgressChanged(SeekBar seekBar, int angle,
                                       boolean fromUser) {
-           if ((counter++)%8==0) {
+           if ((counter++)%25==0) {
                counter = 0;/*
                TuneImage task = new TuneImage();
                task.execute(seekBar.getProgress());*/
@@ -118,20 +107,18 @@ public class TuningFragment extends BaseEditFragment implements OnClickListener 
     private final class BackToMenuClick implements OnClickListener {
         @Override
         public void onClick(View v) {
-            backToMain();
+            backToTune();
         }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (fliterBit != null && (!fliterBit.isRecycled())) {
-            fliterBit.recycle();
-        }
     }
 
-    public void backToMain() {
-        currentBitmap = activity.mainBitmap;
+    public void backToTune() {
+        if (fliterBit!=null)
+            activity.mTuneListFragment.setCurrentBitmap(fliterBit);
         activity.mode = EditImageActivity.MODE_NONE;
         activity.bottomGallery.setCurrentItem(TuneListFragment.INDEX);
         activity.mainImage.setVisibility(View.VISIBLE);
@@ -140,8 +127,8 @@ public class TuningFragment extends BaseEditFragment implements OnClickListener 
 
 
     public void applyFilterImage() {
-        if (currentBitmap == activity.mainBitmap) {
-            backToMain();
+        if (activity.mTuneListFragment.getCurrentBitmap() == activity.mainBitmap) {
+            backToTune();
             return;
         } else {
             SaveImageTask saveTask = new SaveImageTask();
@@ -176,7 +163,7 @@ public class TuningFragment extends BaseEditFragment implements OnClickListener 
             dialog.dismiss();
             if (result) {
                 activity.changeMainBitmap(fliterBit);
-                backToMain();
+                backToTune();
             }// end if
         }
 
@@ -200,7 +187,7 @@ public class TuningFragment extends BaseEditFragment implements OnClickListener 
                 srcBitmap.recycle();
             }
 
-            srcBitmap = Bitmap.createBitmap(activity.mainBitmap.copy(
+            srcBitmap = Bitmap.createBitmap(activity.mTuneListFragment.getCurrentBitmap().copy(
                     Bitmap.Config.RGB_565, true));
             return PhotoProcessing.tunePhoto(srcBitmap, TuneListFragment.MODE,val);
         }
@@ -221,12 +208,8 @@ public class TuningFragment extends BaseEditFragment implements OnClickListener 
             super.onPostExecute(result);
             if (result == null)
                 return;
-            if (fliterBit != null && (!fliterBit.isRecycled())) {
-                fliterBit.recycle();
-            }
             fliterBit = result;
             activity.mainImage.setImageBitmap(fliterBit);
-            currentBitmap = fliterBit;
         }
 
         @Override
@@ -234,13 +217,6 @@ public class TuningFragment extends BaseEditFragment implements OnClickListener 
             super.onPreExecute();
         }
 
-    }// end inner class
-
-    public Bitmap getCurrentBitmap() {
-        return currentBitmap;
     }
 
-    public void setCurrentBitmap(Bitmap currentBitmap) {
-        this.currentBitmap = currentBitmap;
-    }
-}// end class
+}

@@ -39,7 +39,7 @@ import com.xinlan.imageeditlibrary.editimage.view.imagezoom.ImageViewTouchBase;
         public static final int BLUR = 7;
         public static final int TINT = 8;
 
-
+        private Bitmap currentBitmap;
         private LinearLayout mTuneGroup;
         private String[] tuningOptions;
 
@@ -80,18 +80,19 @@ import com.xinlan.imageeditlibrary.editimage.view.imagezoom.ImageViewTouchBase;
        public  void onShow() {
             activity.mode = EditImageActivity.MODE_NONE;
             activity.mainImage.setImageBitmap(activity.mainBitmap);
+            activity.mTuneListFragment.setCurrentBitmap(activity.mainBitmap);
             activity.mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
             activity.mainImage.setScaleEnabled(false);
-            activity.bannerFlipper.showNext();
+            activity.bannerFlipper.setVisibility(View.INVISIBLE);
         }
 
         public void backToMain() {
             fliterBit = null;
-            activity.mainImage.setImageBitmap(activity.mainBitmap);// 返回原图
+            activity.changeMainBitmap(getCurrentBitmap());
+            //activity.mainImage.setImageBitmap(getCurrentBitmap());// 返回原图
             activity.mode = EditImageActivity.MODE_NONE;
             activity.bottomGallery.setCurrentItem(0);
             activity.mainImage.setScaleEnabled(true);
-            activity.bannerFlipper.showPrevious();
         }
 
 
@@ -115,11 +116,22 @@ import com.xinlan.imageeditlibrary.editimage.view.imagezoom.ImageViewTouchBase;
                 mTuneGroup.addView(text, params);
                 text.setTag(i);
                 text.setOnClickListener(this);
-            }// end for i
+            }
         }
 
         void setMODE(int mode) {
             MODE = mode;
+        }
+
+
+        public Bitmap getCurrentBitmap() {
+            if (currentBitmap==null)
+                setCurrentBitmap(activity.mainBitmap);
+            return currentBitmap;
+        }
+
+        public void setCurrentBitmap(Bitmap currentBitmap) {
+            this.currentBitmap = currentBitmap;
         }
 
         @Override

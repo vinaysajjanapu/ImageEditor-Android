@@ -312,7 +312,7 @@ public class EditImageActivity extends BaseActivity {
                 mPaintFragment.backToMain();
                 return;
             case MODE_TUNE:
-                mTuningFragment.backToMain();
+                mTuningFragment.backToTune();
         }// end switch
 
         if (canAutoExit()) {
